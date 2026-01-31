@@ -1,5 +1,6 @@
 # Cyclic Dependencies
 
+Reference:
 **[Why my React app felt slow even though nothing was broken](https://medium.com/@tshrgarg2010/why-my-react-app-felt-slow-even-though-nothing-was-broken-2f1b6c65b975)** (Medium)
 
 This repo provides **GitHub Actions** and **ESLint rules** to detect and prevent cyclic (circular) dependencies in JavaScript, TypeScript, and React projects.
@@ -68,6 +69,7 @@ The file **`eslint-rules-cyclic-dependencies.js`** enables the **`import/no-cycl
 
 3. Run ESLint as usual; any cycle will be reported as an error (or warning if you change the rule severity).
 
+---
 
 ## 3. Removing cyclic dependencies
 
