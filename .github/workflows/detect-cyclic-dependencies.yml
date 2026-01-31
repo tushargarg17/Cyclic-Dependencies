@@ -1,0 +1,39 @@
+# Detect cyclic (circular) dependencies in JavaScript/TypeScript/React projects.
+# Fails the workflow if any circular dependency is found.
+#
+# Assumptions:
+#   - Package manager: npm only (not yarn or pnpm).
+#   - Node.js version: 20.
+#   - Source/entry: app code lives under "src" (edit the madge step if yours is elsewhere).
+#   - Extensions: .js, .jsx, .ts, .tsx (edit --extensions if needed).
+#   - Runner: ubuntu-latest.
+
+name: Detect cyclic dependencies
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  cyclic-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies (optional)
+        run: npm ci
+        continue-on-error: false
+
+      - name: Detect cyclic dependencies
+        run: |
+          echo "=== Circular dependency check (count and list) ==="
+          npx madge@latest --circular --extensions js,jsx,ts,tsx src
