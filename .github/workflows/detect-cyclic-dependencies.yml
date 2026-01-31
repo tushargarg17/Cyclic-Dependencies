@@ -33,7 +33,16 @@ jobs:
         run: npm ci
         continue-on-error: false
 
-      - name: Detect cyclic dependencies
+      - name: Check for cyclic dependencies
         run: |
-          echo "=== Circular dependency check (count and list) ==="
-          npx madge@latest --circular --extensions js,jsx,ts,tsx src
+          echo "Checking cyclic dependencies..."
+          CYCLE_COUNT=$(npx madge --circular --extensions js,jsx --json src | jq 'length')
+
+          echo "Cyclic dependencies found: $CYCLE_COUNT"
+
+          if [ "$CYCLE_COUNT" -gt 0 ]; then
+            echo "::error::New cyclic dependencies found, please resolve them first"
+            exit 1
+          else
+            echo "No new cyclic dependencies found"
+          fi

@@ -1,4 +1,4 @@
-# Prevent New Cyclic Dependencies in React/JS
+# Cyclic Dependencies
 
 **[Why my React app felt slow even though nothing was broken](https://medium.com/@tshrgarg2010/why-my-react-app-felt-slow-even-though-nothing-was-broken-2f1b6c65b975)** (Medium)
 
@@ -35,10 +35,6 @@ A workflow runs [madge](https://github.com/pahen/madge) on push/PR to **main** o
 
 Replace `src` with your entry path (e.g. `app`, `.`, or `packages/web/src`).
 
-### Optional: install project dependencies first
-
-If madge needs your project’s dependencies to resolve imports correctly, uncomment or add an install step before the madge step (e.g. `npm ci` or `yarn install --frozen-lockfile`). The workflow is written so it can run without a `package.json` (using `npx madge@latest`).
-
 ### What happens when cycles are found
 
 Madge prints the cycles to the job log and the workflow fails. Fix the reported cycles (see “Removing cyclic dependencies” below) and push again.
@@ -68,36 +64,10 @@ The file **`eslint-rules-cyclic-dependencies.js`** enables the **`import/no-cycl
        './path/to/eslint-rules-cyclic-dependencies.js',
      ],
    };
-   ```
-
-   Or merge the exported object (e.g. `plugins`, `rules`, `settings`) into your existing config.
-
-   **If you use flat config (`eslint.config.js`):**
-
-   ```js
-   const cyclicDeps = require('./path/to/eslint-rules-cyclic-dependencies.js');
-
-   export default [
-     // your existing config
-     {
-       plugins: cyclicDeps.plugins,
-       rules: cyclicDeps.rules,
-       settings: cyclicDeps.settings,
-     },
-   ];
-   ```
+   ``
 
 3. Run ESLint as usual; any cycle will be reported as an error (or warning if you change the rule severity).
 
-### Rule options
-
-In `eslint-rules-cyclic-dependencies.js` you can adjust:
-
-- **`maxDepth`** – limit how deep the rule traverses (helps if it’s slow).
-- **`allowUnsafeDynamicCyclicDependency`** – set to `true` only if you intentionally break cycles with dynamic `import()`.
-- **`ignoreExternal`** – whether to ignore dependencies under `node_modules`.
-
----
 
 ## 3. Removing cyclic dependencies
 
